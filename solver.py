@@ -3,6 +3,7 @@ import settings
 from typing import List
 from slowotok import Slowotok
 from dictionary import Dictionary
+from dataGetter import DataDownloader
 
 
 def main():
@@ -15,12 +16,10 @@ def main():
         input()
         print('Szukanie slow...')
 
-        # read new file
-        with open(settings.READFILE, 'r') as f:
-            text = f.read()
+        # read new letters (from server or from file)
+        letters = DataDownloader.downloadLetters()
 
         # create proper board
-        letters = extractLetters(text)
         try:
             board = list2gameSquare(letters)
         except ValueError as e:
@@ -68,16 +67,6 @@ def list2gameSquare(letters: List[str]) -> List[List[str]]:
             arr[i][j] = letters[oldI]
             oldI += 1
     return arr
-
-
-def extractLetters(text):
-    """
-    Extract all letters of html that are actual game letters
-    Those letters are between 2 tags.
-    So we search for letter after > (closing tag) and before next  < (opening tag)
-    """
-    return re.findall('(?<=>)[A-Z,Ą,Ć,Ę,Ł,Ń,Ó,Ś,Ź,Ż](?=<)', text)
-
 
 if __name__ == '__main__':
     main()
